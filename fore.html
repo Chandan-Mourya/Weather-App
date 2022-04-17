@@ -117,13 +117,16 @@
 
             let city = document.getElementById("city").value;
 
-            let res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4c720ebec900cabef71eb3e672d8d8f0&units=metric`)
-            let data = await res.json()
+            let res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4c720ebec900cabef71eb3e672d8d8f0&units=metric`) //here we have took normal link of single day
+                                                                                                        //weather and from it we took tha lattitude and longitude for our another link
+
+            let data = await res.json()         //store the data from link 1 in this
             console.log("data:", data)
             var res2 = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&exclude=hourly,minutely,current&appid=4c720ebec900cabef71eb3e672d8d8f0&units=metric`);
-            var data2 = await res2.json();
+                                            //in res2 we store the link 2 and pass the latitude and longitude which we got from data 1
+            var data2 = await res2.json();          //store the api info in data 2
             console.log("date2:", data2)
-            const unixTime = data2.daily[0].dt;
+            const unixTime = data2.daily[0].dt;   
             const date = new Date(unixTime * 100)
 
 
