@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #GetData {
+            width: 350px;
+            height: 200px;
+            border: 1px solid rgb(108, 108, 202);
+            display: block;
+            margin: auto;
+            box-shadow: 10px 5px 5px rgb(108, 108, 202);
+            margin-bottom: 20px;
+
+        }
+
+        h1 {
+            text-align: center;
+            color: rgb(108, 108, 201);
+
+        }
+
+        #hline {
+            width: 200px;
+            height: 50x;
+            border: 2px solid rgb(149, 149, 214);
+
+            display: block;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-left: 20px;
+            color: rgb(135, 135, 156);
+
+        }
+
+        #city {
+            width: 300px;
+            height: 30px;
+            display: block;
+            margin: auto;
+            background-color: rgb(203, 203, 233);
+            border: none;
+
+
+        }
+
+        #btn {
+            display: block;
+            margin: auto;
+            background-color: rgb(108, 108, 202);
+            width: 200px;
+            height: 30px;
+            border-radius: 5px;
+            color: white
+        }
+
+
+
+        h4 {
+            color: rgb(140, 140, 172);
+            margin-left: 20px;
+        }
+        #showData{
+            display:grid;
+            grid-template-columns: repeat(7, 200px);
+            grid-template-rows:1,400px ;
+            gap:20px;
+        }
+        #showData>div{
+            border: 1px solid rgb(108, 108, 202);
+            box-shadow: 10px 5px 5px rgb(108, 108, 202);
+            padding: 20px;
+
+        }
+    
+
+
+
+    </style>
+</head>
+
+<body>
+    <div id="heading">
+        <h1>City Climate Application</h1>
+        <div id="hline">
+
+        </div>
+    </div>
+
+    <div id="GetData">
+        <h2> Enter City Name</h2>
+        <input type="text" id="city" placeholder="Enter city Name here..."><br>
+
+        <button id="btn" onclick="getWeather()">Get Weather</button>
+
+    </div>
+    <div id="showData">
+
+
+
+    </div>
+    <!-- <div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="500" id="gmap_canvas" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://fmovies-online.net">fmovies</a><br><style>.mapouter{position:relative;text-align:right;height:500px;width:600px;}</style><a href="https://www.embedgooglemap.net"></a><style>.gmap_canvas {overflow:hidden;background:none!important;height:500px;width:600px;}</style></div></div> -->
+    <!-- src="https://maps.google.com/maps?q=pune&t=&z=13&ie=UTF8&iwloc=&output=embed" -->
+</body>
+
+</html>
+<script>
+    async function getWeather() {
+        document.getElementById("showData").innerHTML = "";
+        try {
+
+            let city = document.getElementById("city").value;
+
+            let res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4c720ebec900cabef71eb3e672d8d8f0&units=metric`)
+            let data = await res.json()
+            console.log("data:", data)
+            var res2 = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.coord.lat}&lon=${data.coord.lon}&exclude=hourly,minutely,current&appid=4c720ebec900cabef71eb3e672d8d8f0&units=metric`);
+            var data2 = await res2.json();
+            console.log("date2:", data2)
+            const unixTime = data2.daily[0].dt;
+            const date = new Date(unixTime * 100)
+
+
+
+            for (var i = 0; i < data2.daily.length-1; i++) {
+
+                let box = document.createElement("div");
+                box.setAttribute("clsass","box")
+                let dateBox = document.createElement("h4");
+
+                const unixTime = data2.daily[i].dt;
+                const date = new Date(unixTime * 1000)
+
+                dateBox.innerText = date;
+                console.log(dateBox);
+
+                let minTempBox = document.createElement("h4");
+                minTempBox.innerText = `MinTemp:${data2.daily[i].temp.min}°C`;
+
+                let maxTempBox = document.createElement("h4");
+                maxTempBox.innerText = `MaxTemp:${data2.daily[i].temp.max}°C`
+
+
+                var weather = document.createElement("h4");
+                weather.innerText =`Whether: ${data2.daily[i].weather[0].main}`;
+
+
+
+
+
+                box.append(dateBox, minTempBox, maxTempBox, weather)
+                document.getElementById("showData").append(box)
+
+            }
+
+
+
+
+        }
+        catch (err) {
+            console.log(err)
+        }
+
+    }
+
+
+
+
+</script>
